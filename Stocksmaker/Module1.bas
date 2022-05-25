@@ -7244,12 +7244,12 @@ ByRef abook, ByRef asheet, ByRef mostatki)
     r = 1
 
     If msvyaz(i, 2) <> 0 And msvyaz(i, 2) <> "" And msvyaz(i, 2) <> "-" Then
-        Do While Trim(msvyaz(i, 2)) <> Trim(mprice(r, 1))
+        Do While Trim(msvyaz(i, 2)) <> Trim(mprice(r, 2))
             On Error GoTo onerror2
             r = r + 1
         Loop
 
-        mostatki(i) = mprice(r, 4)
+        mostatki(i) = mprice(r, 6)
 
         If mostatki(i) <= 0 Or mostatki(i) = "" Then
             mostatki(i) = 30000
