@@ -485,6 +485,10 @@ Public Sub Остатки()
     If UserForm1.Парнас = True Then
         Call ОПарнас
     End If
+    
+    If UserForm1.Городки77 = True Then
+        Call ОГородки77
+    End If
 
     If UserForm1.Concatenation = True Then
         Call Concatenation
@@ -7990,6 +7994,88 @@ Private Sub ПоискПарнас(ByRef i, ByRef msvyaz, ByRef mprice, ByRef abook, ByRef 
         Loop
         If IsNumeric(mprice(r, 4)) = True And mprice(r, 4) <> vbNullString Then
             mostatki(i) = CLng(mprice(r, 4))
+        Else
+            mostatki(i) = 30000
+        End If
+        
+        GoTo ended
+    Else
+        GoTo onerror2
+    End If
+
+onerror2:
+    mostatki(i) = 30000
+
+ended:
+
+    Workbooks(abook).Worksheets(asheet).Cells(i, 1) = msvyaz(i, 1)
+    Workbooks(abook).Worksheets(asheet).Cells(i, 2) = mostatki(i)
+
+End Sub
+
+Private Sub ОГородки77()
+
+    Dim msvyaz As Variant, mprice As Variant, abook As String, asheet As String, i As Long, mostatki As Variant, nstock, _
+    mprice1 As Variant, abook1 As String, asheet1 As String, ncolumn, ncolumn1
+
+    Application.Workbooks.Open "\\AKABINET\Doc\Наполнение сайтов\Наташа\ОСТАТКИ Сот\Привязка\Привязка Городки77.xlsx"
+
+    msvyaz = ActiveWorkbook.ActiveSheet.Range("A1:B" & _
+    ActiveWorkbook.ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Value
+
+    MsgBox "Выберите остатки Городки77"
+    a = Application.GetOpenFilename
+    If a = False Then
+        MsgBox "Файл не выбран"
+        GoTo ended:
+    End If
+    Workbooks.Open Filename:=a
+
+    a = ActiveWorkbook.name
+
+    mprice = ActiveWorkbook.ActiveSheet.Range("A1:F" & _
+    ActiveWorkbook.ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Value
+
+    For i = 1 To UBound(mprice, 2)
+        mprice(i, 1) = CStr(Application.Trim(mprice(i, 1)))
+    Next
+    
+    For i = 1 To UBound(msvyaz, 1)
+        msvyaz(i, 2) = CStr(Application.Trim(msvyaz(i, 2)))
+    Next i
+
+    ReDim mostatki(UBound(msvyaz, 1))
+
+    Call Create_File_Ostatki(abook, asheet)
+
+    For i = 2 To UBound(msvyaz, 1)
+        Call ПоискГородки77(i, msvyaz, mprice, abook, asheet, mostatki)
+    Next
+
+    If UserForm1.Autosave = True Then
+        Workbooks(abook).SaveAs Filename:=Environ("OSTATKI") & "Остатки Городки77 " & Date & ".csv", FileFormat:=xlCSV
+    End If
+
+    Workbooks("Привязка Городки77.xlsx").Close False
+    Workbooks(a).Close False
+
+ended:
+End Sub
+
+Private Sub ПоискГородки77(ByRef i, ByRef msvyaz, ByRef mprice, ByRef abook, ByRef asheet, ByRef mostatki)
+
+    Dim r As Long, a() As String
+
+    r = 1
+
+    If msvyaz(i, 2) <> 0 And msvyaz(i, 2) <> "" And msvyaz(i, 2) <> "-" Then
+        Do While Trim(msvyaz(i, 2)) <> Trim(mprice(r, 2))
+            On Error GoTo onerror2
+            r = r + 1
+        Loop
+        
+        If IsNumeric(mprice(r, 5)) = True And mprice(r, 5) <> vbNullString Then
+            mostatki(i) = CLng(mprice(r, 5))
         Else
             mostatki(i) = 30000
         End If
