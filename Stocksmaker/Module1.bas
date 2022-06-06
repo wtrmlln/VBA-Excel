@@ -7911,8 +7911,13 @@ Private Sub ПоискGardeck(ByRef i, ByRef msvyaz, ByRef mprice, ByRef abook, ByRef
             On Error GoTo onerror2
             r = r + 1
         Loop
+        
         If IsNumeric(mprice(r, 16)) = True And mprice(r, 16) <> vbNullString Then
-            mostatki(i) = CLng(mprice(r, 16))
+            If mprice(r, 16) <= 0 Then
+                mostatki(i) = 30000
+            Else
+                mostatki(i) = CLng(mprice(r, 16))
+            End If
         Else
             mostatki(i) = 30000
         End If
@@ -7993,7 +7998,11 @@ Private Sub ПоискПарнас(ByRef i, ByRef msvyaz, ByRef mprice, ByRef abook, ByRef 
             r = r + 1
         Loop
         If IsNumeric(mprice(r, 4)) = True And mprice(r, 4) <> vbNullString Then
-            mostatki(i) = CLng(mprice(r, 4))
+            If mprice(r, 4) <= 0 Then
+                mostatki(i) = 30000
+            Else
+                mostatki(i) = CLng(mprice(r, 4))
+            End If
         Else
             mostatki(i) = 30000
         End If
