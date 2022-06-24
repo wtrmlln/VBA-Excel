@@ -1033,8 +1033,8 @@ Private Sub ПоискБелаяГвардияИ(ByRef i, ByRef msvyaz, ByRef mostatki, ByRef r, B
 
     'msvyaz 2 = Для "UUID"
     'msvyaz 8 = Для "Код 1С"
-    If msvyaz(i, 2) <> 0 And msvyaz(i, 2) <> "" Then
-        Do While msvyaz(i, 2) <> mprice(r, 2)
+    If msvyaz(i, 8) <> 0 And msvyaz(i, 8) <> "" Then
+        Do While msvyaz(i, 8) <> mprice(r, 3)
             On Error GoTo onerror2
             r = r + 1
         Loop
@@ -1070,8 +1070,8 @@ ByRef r, ByRef ii, ByRef ili, ByRef mprice)
 
     'msvyaz 3 = Для "UUID"
     'msvyaz 9 = Для "Код 1С"
-    If msvyaz(i, 3) <> 0 And msvyaz(i, 3) <> "" Then
-        Do While msvyaz(i, 3) <> mprice(r, 2)
+    If msvyaz(i, 9) <> 0 And msvyaz(i, 9) <> "" Then
+        Do While msvyaz(i, 9) <> mprice(r, 3)
             On Error GoTo res
             r = r + 1
         Loop
@@ -1085,7 +1085,7 @@ ByRef r, ByRef ii, ByRef ili, ByRef mprice)
     
         'msvyaz 4 = Для "UUID"
         'msvyaz 10 = Для "Код 1С"
-        If msvyaz(i, 4) <> 0 And msvyaz(i, 4) <> "" Then
+        If msvyaz(i, 10) <> 0 And msvyaz(i, 10) <> "" Then
             GoTo onerror1
         Else: GoTo ended
         End If
@@ -1100,8 +1100,8 @@ onerror1:
 
     'msvyaz 4 = Для "UUID"
     'msvyaz 10 = Для "Код 1С"
-    If msvyaz(i, 4) <> 0 And msvyaz(i, 4) <> "" Then
-        Do While msvyaz(i, 4) <> mprice(r, 2)
+    If msvyaz(i, 10) <> 0 And msvyaz(i, 10) <> "" Then
+        Do While msvyaz(i, 10) <> mprice(r, 3)
             On Error GoTo res1
             r = r + 1
         Loop
@@ -1115,7 +1115,7 @@ onerror1:
     
         'msvyaz 5 = Для "UUID"
         'msvyaz 11 = Для "Код 1С"
-        If msvyaz(i, 5) <> 0 And msvyaz(i, 5) <> "" Then
+        If msvyaz(i, 11) <> 0 And msvyaz(i, 11) <> "" Then
             GoTo onerror2
         Else: GoTo ended
         End If
@@ -1130,8 +1130,8 @@ onerror2:
 
     'msvyaz 5 = Для "UUID"
     'msvyaz 11 = Для "Код 1С"
-    If msvyaz(i, 5) <> 0 And msvyaz(i, 5) <> "" Then
-        Do While msvyaz(i, 5) <> mprice(r, 2)
+    If msvyaz(i, 11) <> 0 And msvyaz(i, 11) <> "" Then
+        Do While msvyaz(i, 11) <> mprice(r, 3)
             On Error GoTo res2
             r = r + 1
         Loop
@@ -1145,7 +1145,7 @@ onerror2:
     
         'msvyaz 6 = Для "UUID"
         'msvyaz 12 = Для "Код 1С"
-        If msvyaz(i, 6) <> 0 And msvyaz(i, 6) <> "" Then
+        If msvyaz(i, 12) <> 0 And msvyaz(i, 12) <> "" Then
             GoTo onerror3
         Else: GoTo ended
         End If
@@ -1160,8 +1160,8 @@ onerror3:
 
     'msvyaz 6 = Для "UUID"
     'msvyaz 12 = Для "Код 1С"
-    If msvyaz(i, 6) <> 0 And msvyaz(i, 6) <> "" Then
-        Do While msvyaz(i, 6) <> mprice(r, 2)
+    If msvyaz(i, 12) <> 0 And msvyaz(i, 12) <> "" Then
+        Do While msvyaz(i, 12) <> mprice(r, 3)
             On Error GoTo onerrorx
             r = r + 1
         Loop
