@@ -828,7 +828,7 @@ Private Sub ОТэтчер()
     Workbooks.Open Filename:=a
     a = ActiveWorkbook.name
 
-    mprice = ActiveWorkbook.ActiveSheet.Range("A6:L" & _
+    mprice = ActiveWorkbook.ActiveSheet.Range("A6:U" & _
     ActiveWorkbook.ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Value
 
     ReDim mostatki(UBound(msvyaz, 1))
@@ -862,7 +862,7 @@ ByRef asheet, ByRef mostatki, ByRef abook1, ByRef asheet1)
             On Error GoTo onerror2
             r = r + 1
         Loop
-        mostatki(i) = mprice(r, 12)
+        mostatki(i) = mprice(r, 17)
 
 
         If mostatki(i) = 0 Or mostatki(i) = "" Or InStr(mostatki(i), "Ожидаемая") <> 0 Then
