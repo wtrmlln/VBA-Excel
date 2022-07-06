@@ -828,34 +828,60 @@ Next i
     Workbooks.Add
     xx = ActiveWorkbook.name
 
-ActiveWorkbook.Queries.Add name:="catalog", Formula:= _
-    "let" & Chr(13) & "" & Chr(10) & "    Источник = Xml.Tables(Web.Contents(""https://unixfit.ru/bitrix/catalog_export/catalog.php""))," & Chr(13) & "" & Chr(10) & "    #""Измененный тип"" = Table.TransformColumnTypes(Источник,{{""Attribute:date"", type datetime}})," & Chr(13) & "" & Chr(10) & "    #""Развернутый элемент shop"" = Table.ExpandTableColumn(#""Измененный тип"", ""shop"", {""name"", ""company"", ""url"", ""platform"", ""currencies"", ""cate" & _
-    "gories"", ""offers""}, {""shop.name"", ""shop.company"", ""shop.url"", ""shop.platform"", ""shop.currencies"", ""shop.categories"", ""shop.offers""})," & Chr(13) & "" & Chr(10) & "    #""Развернутый элемент shop.offers"" = Table.ExpandTableColumn(#""Развернутый элемент shop"", ""shop.offers"", {""offer""}, {""shop.offers.offer""})," & Chr(13) & "" & Chr(10) & "    #""Развернутый элемент shop.offers.offer"" = Table.Expand" & _
-    "TableColumn(#""Развернутый элемент shop.offers"", ""shop.offers.offer"", {""url"", ""price"", ""currencyId"", ""categoryId"", ""vendorCode"", ""name"", ""description"", ""param"", ""Attribute:id"", ""Attribute:available"", ""picture""}, {""shop.offers.offer.url"", ""shop.offers.offer.price"", ""shop.offers.offer.currencyId"", ""shop.offers.offer.categoryId"", ""shop" & _
-    ".offers.offer.vendorCode"", ""shop.offers.offer.name"", ""shop.offers.offer.description"", ""shop.offers.offer.param"", ""shop.offers.offer.Attribute:id"", ""shop.offers.offer.Attribute:available"", ""shop.offers.offer.picture""})," & Chr(13) & "" & Chr(10) & "    #""Развернутый элемент shop.offers.offer.vendorCode"" = Table.ExpandTableColumn(#""Развернутый элемент shop.offers.offer"", ""shop." & _
-    "offers.offer.vendorCode"", {""Element:Text""}, {""shop.offers.offer.vendorCode.Element:Text""})" & Chr(13) & "" & Chr(10) & "in" & Chr(13) & "" & Chr(10) & "    #""Развернутый элемент shop.offers.offer.vendorCode"""
+    ActiveWorkbook.Queries.Add name:="catalog", Formula:= _
+        "let" & Chr(13) & "" & Chr(10) & "    Source = Xml.Tables(Web.Contents(""https://unixfit.ru/bitrix/catalog_export/catalog.php""))," & Chr(13) & "" & Chr(10) & "    #""Changed Type"" = Table.TransformColumnTypes(Source,{{""Attribute:date"", type datetime}})," & Chr(13) & "" & Chr(10) & "    shop = #""Changed Type""{0}[shop]," & Chr(13) & "" & Chr(10) & "    #""Eciaiaiiue oei"" = Table.TransformColumnTypes(shop,{{""name"", type text}, {""company"", type text}, {""url"", type tex" & _
+        "t}, {""platform"", type text}})," & Chr(13) & "" & Chr(10) & "    offers = #""Eciaiaiiue oei""{0}[offers]," & Chr(13) & "" & Chr(10) & "    offer = offers{0}[offer]," & Chr(13) & "" & Chr(10) & "    #""Eciaiaiiue oei1"" = Table.TransformColumnTypes(offer,{{""url"", type text}, {""price"", Int64.Type}, {""currencyId"", type text}, {""categoryId"", Int64.Type}, {""vendorCode"", type text}, {""name"", type text}, {""Attribute:id"", Int64.Type}, {""Att" & _
+        "ribute:available"", type logical}, {""picture"", type text}})" & Chr(13) & "" & Chr(10) & "in" & Chr(13) & "" & Chr(10) & "    #""Eciaiaiiue oei1"""
+    Sheets.Add After:=ActiveSheet
+    With ActiveSheet.ListObjects.Add(SourceType:=0, source:= _
+        "OLEDB;Provider=Microsoft.Mashup.OleDb.1;Data Source=$Workbook$;Location=catalog" _
+        , Destination:=Range("$A$1")).QueryTable
+        .CommandType = xlCmdSql
+        .CommandText = Array("SELECT * FROM [catalog]")
+        .RowNumbers = False
+        .FillAdjacentFormulas = False
+        .PreserveFormatting = True
+        .RefreshOnFileOpen = False
+        .BackgroundQuery = True
+        .RefreshStyle = xlInsertDeleteCells
+        .SavePassword = False
+        .SaveData = True
+        .AdjustColumnWidth = True
+        .RefreshPeriod = 0
+        .PreserveColumnInfo = False
+        .ListObject.DisplayName = "catalog"
+        .Refresh BackgroundQuery:=False
+    End With
+    Selection.ListObject.QueryTable.Refresh BackgroundQuery:=False
 
-'    Sheets.Add After:=ActiveSheet
-
-With ActiveSheet.ListObjects.Add(SourceType:=0, source:= _
-    "OLEDB;Provider=Microsoft.Mashup.OleDb.1;Data Source=$Workbook$;Location=catalog" _
-    , Destination:=Range("$A$1")).QueryTable
-    .CommandType = xlCmdSql
-    .CommandText = Array("SELECT * FROM [catalog]")
-    .RowNumbers = False
-    .FillAdjacentFormulas = False
-    .PreserveFormatting = True
-    .RefreshOnFileOpen = False
-    .BackgroundQuery = True
-    .RefreshStyle = xlInsertDeleteCells
-    .SavePassword = False
-    .SaveData = True
-    .AdjustColumnWidth = True
-    .RefreshPeriod = 0
-    .PreserveColumnInfo = False
-    .ListObject.DisplayName = "catalog"
-    .Refresh BackgroundQuery:=False
-End With
+'ActiveWorkbook.Queries.Add name:="catalog", Formula:= _
+'    "let" & Chr(13) & "" & Chr(10) & "    Источник = Xml.Tables(Web.Contents(""https://unixfit.ru/bitrix/catalog_export/catalog.php""))," & Chr(13) & "" & Chr(10) & "    #""Измененный тип"" = Table.TransformColumnTypes(Источник,{{""Attribute:date"", type datetime}})," & Chr(13) & "" & Chr(10) & "    #""Развернутый элемент shop"" = Table.ExpandTableColumn(#""Измененный тип"", ""shop"", {""name"", ""company"", ""url"", ""platform"", ""currencies"", ""cate" & _
+'    "gories"", ""offers""}, {""shop.name"", ""shop.company"", ""shop.url"", ""shop.platform"", ""shop.currencies"", ""shop.categories"", ""shop.offers""})," & Chr(13) & "" & Chr(10) & "    #""Развернутый элемент shop.offers"" = Table.ExpandTableColumn(#""Развернутый элемент shop"", ""shop.offers"", {""offer""}, {""shop.offers.offer""})," & Chr(13) & "" & Chr(10) & "    #""Развернутый элемент shop.offers.offer"" = Table.Expand" & _
+'    "TableColumn(#""Развернутый элемент shop.offers"", ""shop.offers.offer"", {""url"", ""price"", ""currencyId"", ""categoryId"", ""vendorCode"", ""name"", ""description"", ""param"", ""Attribute:id"", ""Attribute:available"", ""picture""}, {""shop.offers.offer.url"", ""shop.offers.offer.price"", ""shop.offers.offer.currencyId"", ""shop.offers.offer.categoryId"", ""shop" & _
+'    ".offers.offer.vendorCode"", ""shop.offers.offer.name"", ""shop.offers.offer.description"", ""shop.offers.offer.param"", ""shop.offers.offer.Attribute:id"", ""shop.offers.offer.Attribute:available"", ""shop.offers.offer.picture""})," & Chr(13) & "" & Chr(10) & "    #""Развернутый элемент shop.offers.offer.vendorCode"" = Table.ExpandTableColumn(#""Развернутый элемент shop.offers.offer"", ""shop." & _
+'    "offers.offer.vendorCode"", {""Element:Text""}, {""shop.offers.offer.vendorCode.Element:Text""})" & Chr(13) & "" & Chr(10) & "in" & Chr(13) & "" & Chr(10) & "    #""Развернутый элемент shop.offers.offer.vendorCode"""
+'
+''    Sheets.Add After:=ActiveSheet
+'
+'With ActiveSheet.ListObjects.Add(SourceType:=0, source:= _
+'    "OLEDB;Provider=Microsoft.Mashup.OleDb.1;Data Source=$Workbook$;Location=catalog" _
+'    , Destination:=Range("$A$1")).QueryTable
+'    .CommandType = xlCmdSql
+'    .CommandText = Array("SELECT * FROM [catalog]")
+'    .RowNumbers = False
+'    .FillAdjacentFormulas = False
+'    .PreserveFormatting = True
+'    .RefreshOnFileOpen = False
+'    .BackgroundQuery = True
+'    .RefreshStyle = xlInsertDeleteCells
+'    .SavePassword = False
+'    .SaveData = True
+'    .AdjustColumnWidth = True
+'    .RefreshPeriod = 0
+'    .PreserveColumnInfo = False
+'    .ListObject.DisplayName = "catalog"
+'    .Refresh BackgroundQuery:=False
+'End With
 
     mprice = ActiveWorkbook.ActiveSheet.Range("A1:P" & _
     ActiveWorkbook.ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Value
@@ -870,11 +896,11 @@ End With
     Next wbk
     Application.ScreenUpdating = False
 
-    ncolumn = fNcolumn(mprice, "shop.offers.offer.vendorCode.Element:Text")
+    ncolumn = fNcolumn(mprice, "vendorCode")
     If ncolumn = "none" Then GoTo ended
-    ncolumn1 = fNcolumn(mprice, "shop.offers.offer.price")
+    ncolumn1 = fNcolumn(mprice, "price")
     If ncolumn1 = "none" Then GoTo ended
-    ncolumn2 = fNcolumn(mprice, "shop.offers.offer.Attribute:available")
+    ncolumn2 = fNcolumn(mprice, "Attribute:available")
     If ncolumn2 = "none" Then GoTo ended
 
     Set dict1 = CreateObject("Scripting.Dictionary")
@@ -908,7 +934,7 @@ End With
             End If
             
             If row_privyazka_in_pricelist <> sEmpty Then
-                If mprice(row_privyazka_in_pricelist, ncolumn2) = "true" Then
+                If mprice(row_privyazka_in_pricelist, ncolumn2) = "true" Or mprice(row_privyazka_in_pricelist, ncolumn2) = True Then
                     
                     Total_1 = CLng(mprice(row_privyazka_in_pricelist, ncolumn1))
                     Total_2 = CLng(mprice(row_privyazka_in_pricelist, ncolumn1) * discount)
@@ -951,10 +977,14 @@ End With
     For i2 = 2 To UBound(msvyaz, 1)
         If dict1.exists(msvyaz(i2, 2)) = True Then
             Workbooks(abook1).ActiveSheet.Cells(i2, 1).Value = msvyaz(i2, 1)
-            Workbooks(abook1).ActiveSheet.Cells(i2, 2).Value = IIf(mprice(dict1.Item(msvyaz(i2, 2)), ncolumn2) = "true", 30001, 0)
+            If mprice(dict1.Item(msvyaz(i2, 2)), ncolumn2) = "true" Or mprice(dict1.Item(msvyaz(i2, 2)), ncolumn2) = True Then
+                Workbooks(abook1).ActiveSheet.Cells(i2, 2).Value = 30001
+            Else
+                Workbooks(abook1).ActiveSheet.Cells(i2, 2).Value = 30000
+            End If
         Else
             Workbooks(abook1).ActiveSheet.Cells(i2, 1).Value = msvyaz(i2, 1)
-            Workbooks(abook1).ActiveSheet.Cells(i2, 2).Value = 0
+            Workbooks(abook1).ActiveSheet.Cells(i2, 2).Value = 30000
         End If
     Next i2
 
