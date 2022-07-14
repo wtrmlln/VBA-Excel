@@ -929,6 +929,11 @@ unrrc:
     Next
     'Конец цикла записи цен в прогрузку по столбцам в одной строке
 
+'    'Цена с Ростова-на-Дону * 1.2 для Донецка и Луганска только для ТОРУДА-ДВОР
+    If str = "1326" Then
+        ProgruzkaMainArray(NRowProgruzka, 120) = ProgruzkaMainArray(NRowProgruzka, 67) * 1.2
+        ProgruzkaMainArray(NRowProgruzka, 121) = ProgruzkaMainArray(NRowProgruzka, 67) * 1.2
+    End If
 
     'Общая уникализация по городам в рамках одного кода и компонента:
     If UserForm1.CheckBox1 = False Then
@@ -937,7 +942,9 @@ unrrc:
 
     'Федеральная цена по Оренбургу:
     ProgruzkaMainArray(NRowProgruzka, 156) = ProgruzkaMainArray(NRowProgruzka, 59)
-            
+    
+
+    
     'Добавление к инфостолбцу GorodInfo федеральной цены без транспортных
     ProgruzkaMainArray(NRowProgruzka, 168) = ProgruzkaMainArray(NRowProgruzka, 168) & "125" & "::" & ProgruzkaMainArray(NRowProgruzka, 156) & "::" & "0" & "::" & "0" & "::" & "DPD "
 
