@@ -780,7 +780,7 @@ Komponent_Change:
         TypeZaborProschet, Quantity, RazgruzkaPrice, ZaborPriceProschet) + tps
 
         TotalPrice = Price + FullDostavkaPrice
-    
+        
         If Quantity > 1 Then
             OptPrice = OptPriceProschet * Quantity
         Else
@@ -929,7 +929,7 @@ unrrc:
     Next
     'Конец цикла записи цен в прогрузку по столбцам в одной строке
 
-'    'Цена с Ростова-на-Дону * 1.2 для Донецка и Луганска только для ТОРУДА-ДВОР
+    'Цена с Ростова-на-Дону * 1.2 для Донецка и Луганска только для ТОРУДА-ДВОР
     If str = "1326" Then
         ProgruzkaMainArray(NRowProgruzka, 120) = ProgruzkaMainArray(NRowProgruzka, 67) * 1.2
         ProgruzkaMainArray(NRowProgruzka, 121) = ProgruzkaMainArray(NRowProgruzka, 67) * 1.2

@@ -18,7 +18,7 @@ Public Sub fMixer(ByRef ProgruzkaMainArray, ByRef TotalCitiesCount As Long, NRow
       
     For i = 5 To TotalCitiesCount - 15
     
-        If schetdict.exists(ProgruzkaMainArray(NRowProgruzka, i)) = True Then
+        If schetdict.exists(CLng(ProgruzkaMainArray(NRowProgruzka, i))) = True Then
             GoTo continue
         End If
 
