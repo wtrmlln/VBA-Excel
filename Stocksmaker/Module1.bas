@@ -866,7 +866,7 @@ ByRef asheet, ByRef mostatki, ByRef abook1, ByRef asheet1)
             On Error GoTo onerror2
             r = r + 1
         Loop
-        mostatki(i) = mprice(r, 17)
+        mostatki(i) = mprice(r, 11)
 
 
         If mostatki(i) = 0 Or mostatki(i) = "" Or InStr(mostatki(i), "Ожидаемая") <> 0 Then

@@ -410,7 +410,7 @@ Next i
     
     For row_count = 1 To UBound(mprice, 1)
         mprice(row_count, 1) = Trim(mprice(row_count, 1))
-        mprice(row_count, 9) = Trim(mprice(row_count, 9))
+        mprice(row_count, 8) = Trim(mprice(row_count, 8))
     Next row_count
 
     Set dict1 = CreateObject("Scripting.Dictionary")
@@ -440,11 +440,11 @@ Next i
             
             If row_privyazka_in_pricelist <> sEmpty Then
                 
-                If mprice(row_privyazka_in_pricelist, 9) = vbNullString Or mprice(row_privyazka_in_pricelist, 9) = sEmpty Then
-                    mprice(row_privyazka_in_pricelist, 9) = 0
+                If mprice(row_privyazka_in_pricelist, 8) = vbNullString Or mprice(row_privyazka_in_pricelist, 8) = sEmpty Then
+                    mprice(row_privyazka_in_pricelist, 8) = 0
                 End If
                     
-                Total_1 = CLng(mprice(row_privyazka_in_pricelist, 9))
+                Total_1 = CLng(mprice(row_privyazka_in_pricelist, 8))
                 
                 If Total_1 <> 0 Then
                     Workbooks(abook).Worksheets("Просчет цен").Cells(row_i, 19).Value = Total_1
@@ -825,34 +825,103 @@ Next i
         dict.Add msvyaz(a, 1), a
     Next a
 
-    Workbooks.Add
-    xx = ActiveWorkbook.name
+    MsgBox "Выберите прайс UNIX-LINE"
+    a = Application.GetOpenFilename
+    If a = False Then
+        MsgBox "Файл не выбран"
+        GoTo ended:
+    End If
+    Workbooks.Open Filename:=a
 
-    ActiveWorkbook.Queries.Add name:="catalog", Formula:= _
-        "let" & Chr(13) & "" & Chr(10) & "    Source = Xml.Tables(Web.Contents(""https://unixfit.ru/bitrix/catalog_export/catalog.php""))," & Chr(13) & "" & Chr(10) & "    #""Changed Type"" = Table.TransformColumnTypes(Source,{{""Attribute:date"", type datetime}})," & Chr(13) & "" & Chr(10) & "    shop = #""Changed Type""{0}[shop]," & Chr(13) & "" & Chr(10) & "    #""Eciaiaiiue oei"" = Table.TransformColumnTypes(shop,{{""name"", type text}, {""company"", type text}, {""url"", type tex" & _
-        "t}, {""platform"", type text}})," & Chr(13) & "" & Chr(10) & "    offers = #""Eciaiaiiue oei""{0}[offers]," & Chr(13) & "" & Chr(10) & "    offer = offers{0}[offer]," & Chr(13) & "" & Chr(10) & "    #""Eciaiaiiue oei1"" = Table.TransformColumnTypes(offer,{{""url"", type text}, {""price"", Int64.Type}, {""currencyId"", type text}, {""categoryId"", Int64.Type}, {""vendorCode"", type text}, {""name"", type text}, {""Attribute:id"", Int64.Type}, {""Att" & _
-        "ribute:available"", type logical}, {""picture"", type text}})" & Chr(13) & "" & Chr(10) & "in" & Chr(13) & "" & Chr(10) & "    #""Eciaiaiiue oei1"""
-    Sheets.Add After:=ActiveSheet
-    With ActiveSheet.ListObjects.Add(SourceType:=0, source:= _
-        "OLEDB;Provider=Microsoft.Mashup.OleDb.1;Data Source=$Workbook$;Location=catalog" _
-        , Destination:=Range("$A$1")).QueryTable
-        .CommandType = xlCmdSql
-        .CommandText = Array("SELECT * FROM [catalog]")
-        .RowNumbers = False
-        .FillAdjacentFormulas = False
-        .PreserveFormatting = True
-        .RefreshOnFileOpen = False
-        .BackgroundQuery = True
-        .RefreshStyle = xlInsertDeleteCells
-        .SavePassword = False
-        .SaveData = True
-        .AdjustColumnWidth = True
-        .RefreshPeriod = 0
-        .PreserveColumnInfo = False
-        .ListObject.DisplayName = "catalog"
-        .Refresh BackgroundQuery:=False
-    End With
-    Selection.ListObject.QueryTable.Refresh BackgroundQuery:=False
+    fileostatki_name = ActiveWorkbook.name
+    FirstSheet = ActiveWorkbook.Sheets(1).name
+    
+    For Each Sh In ActiveWorkbook.Sheets
+    
+        ActiveSheetName = Sh.name
+    
+        If ActiveSheetName = FirstSheet Then
+        
+            ConcatArray = ActiveWorkbook.Sheets(ActiveSheetName). _
+            Range("A8:E" & ActiveWorkbook.Sheets(ActiveSheetName). _
+            Cells.SpecialCells(xlCellTypeLastCell).Row).Value
+        
+'            For concat_row = 1 To UBound(ConcatArray, 1)
+'                If Application.Trim(ConcatArray(concat_row, 1)) = "Москва" Then
+'                    ConcatArray = ActiveWorkbook.Sheets(ActiveSheetName).Range("A5:C" & (concat_row + 3)).Value
+'                    Exit For
+'                End If
+'            Next
+          
+            ReDim mprice(2, 1 To UBound(ConcatArray, 1))
+            For j = 1 To UBound(mprice, 2)
+                mprice(0, j) = Application.Trim(ConcatArray(j, 1))
+                mprice(1, j) = Application.Trim(ConcatArray(j, 5))
+                mprice(2, j) = Application.Trim(ConcatArray(j, 4))
+            Next
+        
+            GoTo continue
+        End If
+    
+        ActiveWorkbook.Sheets(ActiveSheetName). _
+        Range("A8:E" & ActiveWorkbook.Sheets(ActiveSheetName). _
+        Cells.SpecialCells(xlCellTypeLastCell).Row).MergeCells = False
+    
+        ConcatArray = ActiveWorkbook.Sheets(ActiveSheetName). _
+        Range("A8:E" & ActiveWorkbook.Sheets(ActiveSheetName). _
+        Cells.SpecialCells(xlCellTypeLastCell).Row).Value
+    
+'        For concat_row = 1 To UBound(ConcatArray, 1)
+'            If Application.Trim(ConcatArray(concat_row, 1)) = "Москва" Then
+'                ConcatArray = ActiveWorkbook.Sheets(ActiveSheetName).Range("A5:C" & (concat_row + 3)).Value
+'                Exit For
+'            End If
+'        Next
+    
+        StartPos = UBound(mprice, 2)
+        ReDim Preserve mprice(2, 1 To (UBound(ConcatArray, 1) + UBound(mprice, 2)))
+        concat_row = 1
+        For j = StartPos To UBound(mprice, 2)
+            If concat_row > UBound(ConcatArray, 1) Then Exit For
+            If Application.Trim(ConcatArray(concat_row, 1)) <> sEmpty Or Application.Trim(ConcatArray(concat_row, 1)) <> vbNullString Then
+                mprice(0, j) = Application.Trim(ConcatArray(concat_row, 1))
+                mprice(1, j) = Application.Trim(ConcatArray(concat_row, 5))
+                mprice(2, j) = Application.Trim(ConcatArray(concat_row, 4))
+            End If
+            concat_row = concat_row + 1
+        Next j
+    
+continue:
+    Next Sh
+
+'    Workbooks.Add
+'    xx = ActiveWorkbook.name
+'
+'    ActiveWorkbook.Queries.Add name:="catalog", Formula:= _
+'        "let" & Chr(13) & "" & Chr(10) & "    Source = Xml.Tables(Web.Contents(""https://unixfit.ru/bitrix/catalog_export/catalog.php""))," & Chr(13) & "" & Chr(10) & "    #""Changed Type"" = Table.TransformColumnTypes(Source,{{""Attribute:date"", type datetime}})," & Chr(13) & "" & Chr(10) & "    shop = #""Changed Type""{0}[shop]," & Chr(13) & "" & Chr(10) & "    #""Eciaiaiiue oei"" = Table.TransformColumnTypes(shop,{{""name"", type text}, {""company"", type text}, {""url"", type tex" & _
+'        "t}, {""platform"", type text}})," & Chr(13) & "" & Chr(10) & "    offers = #""Eciaiaiiue oei""{0}[offers]," & Chr(13) & "" & Chr(10) & "    offer = offers{0}[offer]," & Chr(13) & "" & Chr(10) & "    #""Eciaiaiiue oei1"" = Table.TransformColumnTypes(offer,{{""url"", type text}, {""price"", Int64.Type}, {""currencyId"", type text}, {""categoryId"", Int64.Type}, {""vendorCode"", type text}, {""name"", type text}, {""Attribute:id"", Int64.Type}, {""Att" & _
+'        "ribute:available"", type logical}, {""picture"", type text}})" & Chr(13) & "" & Chr(10) & "in" & Chr(13) & "" & Chr(10) & "    #""Eciaiaiiue oei1"""
+'    Sheets.Add After:=ActiveSheet
+'    With ActiveSheet.ListObjects.Add(SourceType:=0, source:= _
+'        "OLEDB;Provider=Microsoft.Mashup.OleDb.1;Data Source=$Workbook$;Location=catalog" _
+'        , Destination:=Range("$A$1")).QueryTable
+'        .CommandType = xlCmdSql
+'        .CommandText = Array("SELECT * FROM [catalog]")
+'        .RowNumbers = False
+'        .FillAdjacentFormulas = False
+'        .PreserveFormatting = True
+'        .RefreshOnFileOpen = False
+'        .BackgroundQuery = True
+'        .RefreshStyle = xlInsertDeleteCells
+'        .SavePassword = False
+'        .SaveData = True
+'        .AdjustColumnWidth = True
+'        .RefreshPeriod = 0
+'        .PreserveColumnInfo = False
+'        .ListObject.DisplayName = "catalog"
+'        .Refresh BackgroundQuery:=False
+'    End With
+'   Selection.ListObject.QueryTable.Refresh BackgroundQuery:=False
 
 'ActiveWorkbook.Queries.Add name:="catalog", Formula:= _
 '    "let" & Chr(13) & "" & Chr(10) & "    Источник = Xml.Tables(Web.Contents(""https://unixfit.ru/bitrix/catalog_export/catalog.php""))," & Chr(13) & "" & Chr(10) & "    #""Измененный тип"" = Table.TransformColumnTypes(Источник,{{""Attribute:date"", type datetime}})," & Chr(13) & "" & Chr(10) & "    #""Развернутый элемент shop"" = Table.ExpandTableColumn(#""Измененный тип"", ""shop"", {""name"", ""company"", ""url"", ""platform"", ""currencies"", ""cate" & _
@@ -882,9 +951,9 @@ Next i
 '    .ListObject.DisplayName = "catalog"
 '    .Refresh BackgroundQuery:=False
 'End With
-
-    mprice = ActiveWorkbook.ActiveSheet.Range("A1:P" & _
-    ActiveWorkbook.ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Value
+'
+'    mprice = ActiveWorkbook.ActiveSheet.Range("A1:P" & _
+'    ActiveWorkbook.ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Value
     
     Application.ScreenUpdating = False
     For Each wbk In Application.Workbooks
@@ -895,28 +964,32 @@ Next i
         End If
     Next wbk
     Application.ScreenUpdating = False
-
-    ncolumn = fNcolumn(mprice, "vendorCode")
-    If ncolumn = "none" Then GoTo ended
-    ncolumn1 = fNcolumn(mprice, "price")
-    If ncolumn1 = "none" Then GoTo ended
-    ncolumn2 = fNcolumn(mprice, "Attribute:available")
-    If ncolumn2 = "none" Then GoTo ended
+    
+    ncolumn = 0
+    ncolumn1 = 1
+    ncolumn2 = 2
+    
+'    ncolumn = fNcolumn(mprice, "vendorCode")
+'    If ncolumn = "none" Then GoTo ended
+'    ncolumn1 = fNcolumn(mprice, "price")
+'    If ncolumn1 = "none" Then GoTo ended
+'    ncolumn2 = fNcolumn(mprice, "Attribute:available")
+'    If ncolumn2 = "none" Then GoTo ended
 
     Set dict1 = CreateObject("Scripting.Dictionary")
 
-    For a = 1 To UBound(mprice, 1)
-        If dict1.exists(Trim(mprice(a, ncolumn))) = False Then
-            If Trim(mprice(a, ncolumn)) <> "" And Trim(mprice(a, ncolumn)) <> 0 Then
-                dict1.Add Trim(mprice(a, ncolumn)), a
+    For a = 1 To UBound(mprice, 2)
+        If dict1.exists(Trim(mprice(ncolumn, a))) = False Then
+            If Trim(mprice(ncolumn, a)) <> "" And Trim(mprice(ncolumn, a)) <> 0 Then
+                dict1.Add Trim(mprice(ncolumn, a)), a
             End If
         End If
     Next a
 
-    Workbooks.Add
-    abook1 = ActiveWorkbook.name
-    Workbooks(abook1).ActiveSheet.Cells(1, 1).Value = "Kod 1s"
-    Workbooks(abook1).ActiveSheet.Cells(1, 2).Value = "Ostatok"
+'    Workbooks.Add
+'    abook1 = ActiveWorkbook.name
+'    Workbooks(abook1).ActiveSheet.Cells(1, 1).Value = "Kod 1s"
+'    Workbooks(abook1).ActiveSheet.Cells(1, 2).Value = "Ostatok"
 
     Workbooks(abook).Activate
 
@@ -934,17 +1007,11 @@ Next i
             End If
             
             If row_privyazka_in_pricelist <> sEmpty Then
-                If mprice(row_privyazka_in_pricelist, ncolumn2) = "true" Or mprice(row_privyazka_in_pricelist, ncolumn2) = True Then
-                    
-                    Total_1 = CLng(mprice(row_privyazka_in_pricelist, ncolumn1))
-                    Total_2 = CLng(mprice(row_privyazka_in_pricelist, ncolumn1) * discount)
-                                    
-                    Workbooks(abook).Worksheets("Просчет цен").Cells(row_i, 18).Value = Total_1
-                    Workbooks(abook).Worksheets("Просчет цен").Cells(row_i, 19).Value = Total_2
-                Else
-                    Workbooks(abook).Worksheets("Просчет цен").Cells(row_i, 18).Value = 0
-                    Workbooks(abook).Worksheets("Просчет цен").Cells(row_i, 19).Value = 0
-                End If
+                Total_1 = CLng(mprice(ncolumn1, row_privyazka_in_pricelist))
+                Total_2 = CLng(mprice(ncolumn2, row_privyazka_in_pricelist))
+                                
+                Workbooks(abook).Worksheets("Просчет цен").Cells(row_i, 18).Value = Total_1
+                Workbooks(abook).Worksheets("Просчет цен").Cells(row_i, 19).Value = Total_2
             Else
                 Workbooks(abook).Worksheets("Просчет цен").Cells(row_i, 18).Value = 0
                 Workbooks(abook).Worksheets("Просчет цен").Cells(row_i, 19).Value = 0
@@ -974,21 +1041,21 @@ Next i
         End If
     Next i1
 
-    For i2 = 2 To UBound(msvyaz, 1)
-        If dict1.exists(msvyaz(i2, 2)) = True Then
-            Workbooks(abook1).ActiveSheet.Cells(i2, 1).Value = msvyaz(i2, 1)
-            If mprice(dict1.Item(msvyaz(i2, 2)), ncolumn2) = "true" Or mprice(dict1.Item(msvyaz(i2, 2)), ncolumn2) = True Then
-                Workbooks(abook1).ActiveSheet.Cells(i2, 2).Value = 30001
-            Else
-                Workbooks(abook1).ActiveSheet.Cells(i2, 2).Value = 30000
-            End If
-        Else
-            Workbooks(abook1).ActiveSheet.Cells(i2, 1).Value = msvyaz(i2, 1)
-            Workbooks(abook1).ActiveSheet.Cells(i2, 2).Value = 30000
-        End If
-    Next i2
-
-    Workbooks(abook1).SaveAs Filename:=Environ("OSTATKI") & "Остатки UNIX " & Date & ".csv", FileFormat:=xlCSV
+'    For i2 = 2 To UBound(msvyaz, 1)
+'        If dict1.exists(msvyaz(i2, 2)) = True Then
+'            Workbooks(abook1).ActiveSheet.Cells(i2, 1).Value = msvyaz(i2, 1)
+'            If mprice(dict1.Item(msvyaz(i2, 2)), ncolumn2) = "true" Or mprice(dict1.Item(msvyaz(i2, 2)), ncolumn2) = True Then
+'                Workbooks(abook1).ActiveSheet.Cells(i2, 2).Value = 30001
+'            Else
+'                Workbooks(abook1).ActiveSheet.Cells(i2, 2).Value = 30000
+'            End If
+'        Else
+'            Workbooks(abook1).ActiveSheet.Cells(i2, 1).Value = msvyaz(i2, 1)
+'            Workbooks(abook1).ActiveSheet.Cells(i2, 2).Value = 30000
+'        End If
+'    Next i2
+'
+'    Workbooks(abook1).SaveAs Filename:=Environ("OSTATKI") & "Остатки UNIX " & Date & ".csv", FileFormat:=xlCSV
 
     uf2.Show vbModeless
 
