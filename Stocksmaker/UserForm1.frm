@@ -39,6 +39,3 @@ Private Sub CommandButton3_Click()
 UserForm2.Show
 End Sub
 
-Private Sub Concatenation_Click()
-
-End Sub

@@ -493,6 +493,10 @@ Public Sub Остатки()
     If UserForm1.Диком = True Then
         Call ОДиком
     End If
+    
+    If UserForm1.ГКВысота = True Then
+        Call ОГКВысота
+    End If
 
     If UserForm1.Concatenation = True Then
         Call Concatenation
@@ -8128,7 +8132,99 @@ Private Sub ОДиком()
 
     a = ActiveWorkbook.name
 
-    mprice = ActiveWorkbook.ActiveSheet.Range("A1:H" & _
+    mprice = ActiveWorkbook.ActiveSheet.Range("A2:H" & _
+    ActiveWorkbook.ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Value
+
+    ncolumn = fNcolumn(mprice, "Артикул", 1)
+    If ncolumn = 0 Then GoTo ended
+    
+    ncolumn1 = fNcolumn(mprice, "В наличии", 1)
+    If ncolumn1 = 0 Then GoTo ended
+
+    For i = 1 To UBound(mprice, 2)
+        mprice(i, 1) = CStr(Application.Trim(mprice(i, 1)))
+    Next
+    
+    For i = 1 To UBound(msvyaz, 1)
+        msvyaz(i, 2) = CStr(Application.Trim(msvyaz(i, 2)))
+    Next i
+
+    ReDim mostatki(UBound(msvyaz, 1))
+
+    Call Create_File_Ostatki(abook, asheet)
+
+    For i = 2 To UBound(msvyaz, 1)
+        Call ПоискДиком(i, msvyaz, mprice, abook, asheet, mostatki, ncolumn, ncolumn1)
+    Next
+
+    If UserForm1.Autosave = True Then
+        Workbooks(abook).SaveAs Filename:=Environ("OSTATKI") & "Остатки Диком " & Date & ".csv", FileFormat:=xlCSV
+    End If
+
+    Workbooks("Привязка Диком.xlsx").Close False
+    Workbooks(a).Close False
+
+ended:
+End Sub
+
+Private Sub ПоискДиком(ByRef i, ByRef msvyaz, ByRef mprice, ByRef abook, ByRef asheet, ByRef mostatki, ByRef ncolumn, ByRef ncolumn1)
+
+    Dim r As Long, a() As String
+
+    r = 1
+
+    If msvyaz(i, 2) <> 0 And msvyaz(i, 2) <> "" And msvyaz(i, 2) <> "-" Then
+        Do While Trim(msvyaz(i, 2)) <> Trim(mprice(r, ncolumn))
+            On Error GoTo onerror2
+            r = r + 1
+        Loop
+        
+        If IsNumeric(mprice(r, ncolumn1)) = True And mprice(r, ncolumn1) <> vbNullString Then
+            If mprice(r, ncolumn1) > 0 Then
+                mostatki(i) = CLng(mprice(r, ncolumn1))
+            Else
+                mostatki(i) = 30000
+            End If
+        Else
+            mostatki(i) = 30000
+        End If
+        
+        GoTo ended
+    Else
+        GoTo onerror2
+    End If
+
+onerror2:
+    mostatki(i) = 30000
+
+ended:
+
+    Workbooks(abook).Worksheets(asheet).Cells(i, 1) = msvyaz(i, 1)
+    Workbooks(abook).Worksheets(asheet).Cells(i, 2) = mostatki(i)
+
+End Sub
+
+Private Sub ОГКВысота()
+
+    Dim msvyaz As Variant, mprice As Variant, abook As String, asheet As String, i As Long, mostatki As Variant, nstock, _
+    mprice1 As Variant, abook1 As String, asheet1 As String, ncolumn, ncolumn1
+
+    Application.Workbooks.Open "\\AKABINET\Doc\Наполнение сайтов\Наташа\ОСТАТКИ Сот\Привязка\Привязка ГК Высота.xlsx"
+
+    msvyaz = ActiveWorkbook.ActiveSheet.Range("A1:B" & _
+    ActiveWorkbook.ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Value
+
+    MsgBox "Выберите остатки ГК Высота"
+    a = Application.GetOpenFilename
+    If a = False Then
+        MsgBox "Файл не выбран"
+        GoTo ended:
+    End If
+    Workbooks.Open Filename:=a
+
+    a = ActiveWorkbook.name
+
+    mprice = ActiveWorkbook.ActiveSheet.Range("A1:F" & _
     ActiveWorkbook.ActiveSheet.Cells.SpecialCells(xlCellTypeLastCell).Row).Value
 
     For i = 1 To UBound(mprice, 2)
@@ -8144,20 +8240,20 @@ Private Sub ОДиком()
     Call Create_File_Ostatki(abook, asheet)
 
     For i = 2 To UBound(msvyaz, 1)
-        Call ПоискДиком(i, msvyaz, mprice, abook, asheet, mostatki)
+        Call ПоискГКВысота(i, msvyaz, mprice, abook, asheet, mostatki)
     Next
 
     If UserForm1.Autosave = True Then
-        Workbooks(abook).SaveAs Filename:=Environ("OSTATKI") & "Остатки Диком " & Date & ".csv", FileFormat:=xlCSV
+        Workbooks(abook).SaveAs Filename:=Environ("OSTATKI") & "Остатки ГК Высота " & Date & ".csv", FileFormat:=xlCSV
     End If
 
-    Workbooks("Привязка Диком.xlsx").Close False
+    Workbooks("Привязка ГК Высота.xlsx").Close False
     Workbooks(a).Close False
 
 ended:
 End Sub
 
-Private Sub ПоискДиком(ByRef i, ByRef msvyaz, ByRef mprice, ByRef abook, ByRef asheet, ByRef mostatki)
+Private Sub ПоискГКВысота(ByRef i, ByRef msvyaz, ByRef mprice, ByRef abook, ByRef asheet, ByRef mostatki)
 
     Dim r As Long, a() As String
 
@@ -8169,11 +8265,12 @@ Private Sub ПоискДиком(ByRef i, ByRef msvyaz, ByRef mprice, ByRef abook, ByRef a
             r = r + 1
         Loop
         
-        If IsNumeric(mprice(r, 8)) = True And mprice(r, 8) <> vbNullString Then
-            If mprice(r, 8) > 0 Then
-                mostatki(i) = CLng(mprice(r, 8))
+        If IsNumeric(mprice(r, 6)) = True And mprice(r, 6) <> vbNullString Then
+            If mprice(r, 6) > 0 Then
+                mostatki(i) = CLng(mprice(r, 6))
             Else
                 mostatki(i) = 30000
+            End If
         Else
             mostatki(i) = 30000
         End If
