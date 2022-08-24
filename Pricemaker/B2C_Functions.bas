@@ -9,74 +9,36 @@ Option Explicit
 
 Public Function fDostavka(NCity, TerminalTerminalPrice, ZaborPrice, ObreshetkaPrice, _
 GorodOtpravki, JU, TypeZaborProschet, Quantity, _
-RazgruzkaPrice, ZaborPriceProschet, Optional ByRef spmag As String = "") As Double
+RazgruzkaPrice, ZaborPriceProschet) As Double
 
-    'Если 796 компонент (ПМК), тогда
-    If spmag = "Kab" Then
-
-        'Если город нельготный, тогда
-        If DictLgotniiGorod.exists(GorodOtpravki) = False Then
-            If NCity < 107 Then
-                If JU <> 0 Then
-                    fDostavka = (TerminalTerminalPrice * 1.3) + ObreshetkaPrice / 2
-                Else
-                    fDostavka = TerminalTerminalPrice + ZaborPrice
-                End If
-            ElseIf NCity >= 107 Then
-                If JU <> 0 Then
-                    fDostavka = (TerminalTerminalPrice * 1.3) + ZaborPriceProschet + ObreshetkaPrice / 2
-                Else
-                    fDostavka = TerminalTerminalPrice + ZaborPriceProschet
-                End If
+    'Если город не льготный, тогда
+    If DictLgotniiGorod.exists(GorodOtpravki) = False Then
+        If NCity < 123 Or NCity >= 143 And NCity < 163 Then
+            If JU <> 0 Then
+                fDostavka = (TerminalTerminalPrice * 1.3) + ZaborPrice + ObreshetkaPrice / 2 + RazgruzkaPrice
+            Else
+                fDostavka = TerminalTerminalPrice + ZaborPrice + RazgruzkaPrice
             End If
-        
-            'Если город льготный, тогда
-        ElseIf DictLgotniiGorod.exists(GorodOtpravki) = True Then
-            
-            If NCity < 107 Then
-                If JU <> 0 Then
-                    fDostavka = (TerminalTerminalPrice * 1.3) + ZaborPrice + ObreshetkaPrice / 2
-                Else
-                    fDostavka = TerminalTerminalPrice + ZaborPrice
-                End If
-            ElseIf NCity >= 107 Then
-                If JU <> 0 Then
-                    fDostavka = (TerminalTerminalPrice * 1.3) + ZaborPriceProschet + ObreshetkaPrice / 2
-                Else
-                    fDostavka = TerminalTerminalPrice + ZaborPriceProschet
-                End If
+        ElseIf NCity >= 123 And NCity < 143 Or NCity >= 163 Then
+            If JU <> 0 Then
+                fDostavka = (TerminalTerminalPrice * 1.3) + ZaborPriceProschet + ObreshetkaPrice / 2 + RazgruzkaPrice
+            Else
+                fDostavka = TerminalTerminalPrice + ZaborPriceProschet + RazgruzkaPrice
             End If
         End If
-    Else
-        'Если город не льготный, тогда
-        If DictLgotniiGorod.exists(GorodOtpravki) = False Then
-            If NCity < 123 Or NCity >= 143 And NCity < 163 Then
-                If JU <> 0 Then
-                    fDostavka = (TerminalTerminalPrice * 1.3) + ZaborPrice + ObreshetkaPrice / 2 + RazgruzkaPrice
-                Else
-                    fDostavka = TerminalTerminalPrice + ZaborPrice + RazgruzkaPrice
-                End If
-            ElseIf NCity >= 123 And NCity < 143 Or NCity >= 163 Then
-                If JU <> 0 Then
-                    fDostavka = (TerminalTerminalPrice * 1.3) + ZaborPriceProschet + ObreshetkaPrice / 2 + RazgruzkaPrice
-                Else
-                    fDostavka = TerminalTerminalPrice + ZaborPriceProschet + RazgruzkaPrice
-                End If
+        'Если город льготный, тогда
+    ElseIf DictLgotniiGorod.exists(GorodOtpravki) = True Then
+        If NCity < 123 Or NCity >= 143 And NCity < 163 Then
+            If JU <> 0 Then
+                fDostavka = (TerminalTerminalPrice * 1.3) + ZaborPrice + ObreshetkaPrice / 2 + RazgruzkaPrice
+            Else
+                fDostavka = TerminalTerminalPrice + ZaborPrice + RazgruzkaPrice
             End If
-            'Если город льготный, тогда
-        ElseIf DictLgotniiGorod.exists(GorodOtpravki) = True Then
-            If NCity < 123 Or NCity >= 143 And NCity < 163 Then
-                If JU <> 0 Then
-                    fDostavka = (TerminalTerminalPrice * 1.3) + ZaborPrice + ObreshetkaPrice / 2 + RazgruzkaPrice
-                Else
-                    fDostavka = TerminalTerminalPrice + ZaborPrice + RazgruzkaPrice
-                End If
-            ElseIf NCity >= 123 And NCity < 143 Or NCity >= 163 Then
-                If JU <> 0 Then
-                    fDostavka = (TerminalTerminalPrice * 1.3) + ZaborPriceProschet + ObreshetkaPrice / 2 + RazgruzkaPrice
-                Else
-                    fDostavka = TerminalTerminalPrice + ZaborPriceProschet + RazgruzkaPrice
-                End If
+        ElseIf NCity >= 123 And NCity < 143 Or NCity >= 163 Then
+            If JU <> 0 Then
+                fDostavka = (TerminalTerminalPrice * 1.3) + ZaborPriceProschet + ObreshetkaPrice / 2 + RazgruzkaPrice
+            Else
+                fDostavka = TerminalTerminalPrice + ZaborPriceProschet + RazgruzkaPrice
             End If
         End If
     End If

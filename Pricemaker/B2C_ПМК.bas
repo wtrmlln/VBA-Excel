@@ -234,7 +234,7 @@ Komponent_Change:
 
         Tarif = fTarif(NRowProschet, CitiesArray(NCity), VolumetricWeight)
         MinTerminalTerminalPrice = fTarif(NRowProschet, CitiesArray(NCity))
-
+        
         If NCity >= 107 And NCity < 114 _
         Or NCity >= 116 And NCity < 122 _
         Or NCity >= 122 And NCity < 124 _
@@ -259,7 +259,7 @@ Komponent_Change:
         End If
 
         FullDostavkaPrice = fDostavka(NCity, TerminalTerminalPrice, ZaborPrice, ObreshetkaPrice, GorodOtpravki, JU, _
-        TypeZaborProschet, Quantity, RazgruzkaPrice, ZaborPriceProschet, "Kab") + tps
+        TypeZaborProschet, Quantity, RazgruzkaPrice, ZaborPriceProschet) + tps
 
         TotalPrice = Price + FullDostavkaPrice
        
@@ -883,7 +883,7 @@ Komponent_Change:
         End If
 
         FullDostavkaPrice = fDostavka(NCity, TerminalTerminalPrice, ZaborPrice, ObreshetkaPrice, GorodOtpravki, JU, _
-        TypeZaborProschet, Quantity, RazgruzkaPrice, ZaborPriceProschet, "Kab") + tps
+        TypeZaborProschet, Quantity, RazgruzkaPrice, ZaborPriceProschet) + tps
 
         TotalPrice = Price + FullDostavkaPrice
         
