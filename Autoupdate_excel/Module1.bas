@@ -410,7 +410,7 @@ Next i
     
     For row_count = 1 To UBound(mprice, 1)
         mprice(row_count, 1) = Trim(mprice(row_count, 1))
-        mprice(row_count, 8) = Trim(mprice(row_count, 8))
+        mprice(row_count, 9) = Trim(mprice(row_count, 9))
     Next row_count
 
     Set dict1 = CreateObject("Scripting.Dictionary")
@@ -440,11 +440,11 @@ Next i
             
             If row_privyazka_in_pricelist <> sEmpty Then
                 
-                If mprice(row_privyazka_in_pricelist, 8) = vbNullString Or mprice(row_privyazka_in_pricelist, 8) = sEmpty Then
-                    mprice(row_privyazka_in_pricelist, 8) = 0
+                If mprice(row_privyazka_in_pricelist, 9) = vbNullString Or mprice(row_privyazka_in_pricelist, 9) = sEmpty Then
+                    mprice(row_privyazka_in_pricelist, 9) = 0
                 End If
                     
-                Total_1 = CLng(mprice(row_privyazka_in_pricelist, 8))
+                Total_1 = CLng(mprice(row_privyazka_in_pricelist, 9))
                 
                 If Total_1 <> 0 Then
                     Workbooks(abook).Worksheets("Просчет цен").Cells(row_i, 19).Value = Total_1
