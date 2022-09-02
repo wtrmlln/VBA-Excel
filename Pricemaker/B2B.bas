@@ -21,7 +21,7 @@ Public Sub Прогрузка_Б2Б()
     Dim KABArray() As String
     Dim PMKArray() As String
     Dim LedosvetArray() As String
-    
+
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     Dim Proschet() As Variant                    'Активный лист от А1:T До последней заполненной ячейки + 1
     Dim ProgruzkaPMK() As Variant
@@ -29,6 +29,9 @@ Public Sub Прогрузка_Б2Б()
     Dim ProgruzkaToruda() As Variant
     Dim ProgruzkaKab() As Variant
     Dim ProgruzkaLedosvet() As Variant
+    
+    Dim CityForMarginOutput As String
+    Dim MarginOutput As String
     
     Set WbProschet = ActiveWorkbook
     
@@ -60,6 +63,12 @@ Public Sub Прогрузка_Б2Б()
     
     UserForm1.Caption = Left(ThisWorkbook.name, 19)
     UserForm1.Show
+    
+    If UserForm1.Вывести_наценку = True Then
+        'UserForm1.Hide
+        UserForm6.Show
+        CityForMarginOutput = UserForm6.TextBox1.Text
+    End If
     
     Dim InputArray() As String
 
@@ -330,6 +339,11 @@ Public Sub Прогрузка_Б2Б()
             ReDim PriceArray(1 To UBound(CitiesArrayPMK))
             For i = 1 To UBound(CitiesArrayPMK)
                 
+                If CityForMarginOutput <> vbNullString And CitiesArrayPMK(i) = CityForMarginOutput _
+                Or CityForMarginOutput <> "" And CitiesArrayPMK(i) = CityForMarginOutput Then
+                    MarginOutput = MarginOutput & vbCrLf & CStr(MarginsArray(i)) & " " & CStr(Komponent)
+                End If
+                
                 If MarginsArray(i) = 0 Then
                     PriceArray(i) = 0
                 Else
@@ -554,6 +568,12 @@ Public Sub Прогрузка_Б2Б()
             Next
             
             For i = 1 To UBound(CitiesArrayToruda)
+                
+                If CityForMarginOutput <> vbNullString And CitiesArrayToruda(i) = CityForMarginOutput _
+                Or CityForMarginOutput <> "" And CitiesArrayToruda(i) = CityForMarginOutput Then
+                    MarginOutput = MarginOutput & vbCrLf & CStr(MarginsArray(i)) & " " & CStr(Komponent)
+                End If
+                
                 If MarginsArray(i) = 0 Then
                     PriceArray(i) = 0
                 Else
@@ -720,6 +740,13 @@ Public Sub Прогрузка_Б2Б()
             Next
             
             For i = 1 To UBound(CitiesArrayKab)
+                
+                                
+                If CityForMarginOutput <> vbNullString And CitiesArrayKab(i) = CityForMarginOutput _
+                Or CityForMarginOutput <> "" And CitiesArrayKab(i) = CityForMarginOutput Then
+                    MarginOutput = MarginOutput & vbCrLf & CStr(MarginsArray(i)) & " " & CStr(Komponent)
+                End If
+                
                 If MarginsArray(i) = 0 Then
                     PriceArray(i) = 0
                 Else
@@ -885,6 +912,12 @@ Public Sub Прогрузка_Б2Б()
             Next
             
             For i = 1 To UBound(CitiesArrayLedosvet)
+                
+                If CityForMarginOutput <> vbNullString And CitiesArrayKab(i) = CityForMarginOutput _
+                Or CityForMarginOutput <> "" And CitiesArrayKab(i) = CityForMarginOutput Then
+                    MarginOutput = MarginOutput & vbCrLf & CStr(MarginsArray(i)) & " " & CStr(Komponent)
+                End If
+                
                 If MarginsArray(i) = 0 Then
                     PriceArray(i) = 0
                 Else
@@ -996,7 +1029,11 @@ Public Sub Прогрузка_Б2Б()
         
         Erase LedosvetArray, PriceArray, MarginsArray, WsMarginsLedosvet, CitiesArrayLedosvet, ProgruzkaLedosvet
     End If
-
+    
+    If CityForMarginOutput <> vbNullString Or CityForMarginOutput <> "" Then
+        MsgBox MarginOutput
+    End If
+    
     Unload UserForm1
 
 End Sub

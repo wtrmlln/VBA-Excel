@@ -85,6 +85,7 @@ If ActiveWorkbook.name = "Просчет цен B2B.xlsb" Then
     UserForm1.Autosave.Value = True
     UserForm1.ok.Enabled = True
     UserForm1.OptionButton1.Enabled = True
+    UserForm1.Вывести_наценку.Enabled = True
     
     UserForm1.OptionButton1.Caption = "Прогрузки B2B"
 End If
